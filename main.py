@@ -3,15 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SconQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:qwerty@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:qwerty@localhost:8889/build-a-blog'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
 class Blog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.text)
-    blog = db.Column(db.text)
+    title = db.Column(db.Text)
+    blog = db.Column(db.Text)
 
     def __init__(self, title, blog):
         self.title = title
@@ -24,7 +24,7 @@ def blank(text):
     else:
         return True
 
-@app.route(/all_blogs)
+@app.route('/all_blogs')
 def view_blogs():
 
     show_all = Blog.query.all()
@@ -52,10 +52,10 @@ def new_post():
         else:
             db.session.add(add_all)
             db.session.commit()
-            return redirect(/all_blogs)
+            return redirect('/all_blogs')
         
     else:
-        render_template(/new_post)
+        render_template('/new_post')
 
 if __name__ == '__main__':
     app.run()
