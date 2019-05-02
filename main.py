@@ -24,28 +24,32 @@ def blank(text):
     else:
         return True
 
+@app.route('/')
+def redirect_main():
+    return redirect('/new_blog')
+
 @app.route('/all_blogs')
 def view_blogs():
 
     show_all = Blog.query.all()
-    render_template('all_blogs.html', blogs=show_all)
+    return render_template('all_blogs.html', blogs=show_all)
 
-@app.route('/new_post', methods=['POST', 'GET'])
+@app.route('/new_blog', methods=['POST', 'GET'])
 def new_post():
 
     title_error = ""
     blog_error = ""
 
     if request.method == 'POST':
-        add_title = request.form['new_title']
-        add_blog = request.form['new_blog']
+        add_title = request.form['blog_title']
+        add_blog = request.form['blog_post']
         add_all = Blog(add_title, add_blog)
 
         if blank(add_title):
             title_error = "You need to enter a title."
             if blank(add_blog):
                 blog_error = "You need to make a blog entry."
-                return render_template('new_blog.html', title_error=title_error, blog_error=blog_error)
+            return render_template('new_blog.html', title_error=title_error, blog_error=blog_error)
         elif blank(add_blog):
             blog_error = "You need to make a blog entry."
             return render_template('new_blog.html', title_error=title_error, blog_error=blog_error)
@@ -55,7 +59,7 @@ def new_post():
             return redirect('/all_blogs')
         
     else:
-        render_template('/new_post')
+        return render_template('new_blog.html')
 
 if __name__ == '__main__':
     app.run()

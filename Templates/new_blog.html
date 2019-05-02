@@ -3,13 +3,13 @@
 {% block content %}    
     
     <h1>New Blog Post</h1>
-    <form id=form action="/new_post" method='POST'>
+    <form id=form action="/new_blog" method='POST'>
         <label>Blog Title:
-            <input name="blog_title" type="text" value="{{new_title}}">
+            <input name="blog_title" type="text"}>
         </label>
         <p class="error">{{title_error}}</p>
         <label>Blog Post:
-            <textarea name="blog_post" type="textarea" rows="10" cols="100" value={{new_blog}}></textarea>
+            <textarea name="blog_post" type="textarea" rows="10" cols="100"></textarea>
         </label>
         <p class="error">{{blog_error}}</p>
         <input type="submit" value="Add Entry" />
