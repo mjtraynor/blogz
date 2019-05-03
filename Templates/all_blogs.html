@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
     <h1>Michael Traynor's Blogs</h1>
     {% for blog in blogs %}
-        <h2>{{blog.title}}</h2>
+        <h2><a href="/all_blogs?id={{blog.id}}">{{blog.title}}</a></h2>
         <p></p>
         <p>{{blog.blog}}</p>
         <p></p>

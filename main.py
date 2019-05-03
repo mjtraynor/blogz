@@ -26,13 +26,19 @@ def blank(text):
 
 @app.route('/')
 def redirect_main():
-    return redirect('/new_blog')
+    return redirect('/all_blogs')
 
 @app.route('/all_blogs')
 def view_blogs():
 
-    show_all = Blog.query.all()
-    return render_template('all_blogs.html', blogs=show_all)
+    blog_id = request.args.get('id')
+
+    if blog_id:
+        view_blog=Blog.query.get(blog_id)
+        return render_template('view_blog.html', blog=view_blog)
+    else:
+        show_all = Blog.query.all()
+        return render_template('all_blogs.html', blogs=show_all)
 
 @app.route('/new_blog', methods=['POST', 'GET'])
 def new_post():
@@ -56,8 +62,8 @@ def new_post():
         else:
             db.session.add(add_all)
             db.session.commit()
-            return redirect('/all_blogs')
-        
+            show_blog = "/all_blogs?id=" + str(add_all.id)
+            return redirect(show_blog)
     else:
         return render_template('new_blog.html')
 
