@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -31,7 +31,6 @@ class User(db.Model):
         self.password = password
 
 def blank(text):
-
     if text:
         return False
     else:
@@ -43,7 +42,6 @@ def redirect_main():
 
 @app.route('/all_blogs')
 def view_blogs():
-
     blog_id = request.args.get('id')
 
     if blog_id:
@@ -79,6 +77,80 @@ def new_post():
             return redirect(show_blog)
     else:
         return render_template('new_blog.html')
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user:
+            if user.password == password:
+                session['username'] = username
+                flash("Logged in")
+                return redirect('/newpost')
+            else:
+                flash("Incorrect password entered")
+                return redirect('/login')         
+        else:
+            flash('User does not exist')
+            return redirect('/login')
+
+## Need to add something here about what happend if they want to create an account, and get redirected to /signup
+
+    return render_template('login.html')    
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+
+    def no_entry(text):
+        if not text:
+            return " is required."
+
+    def length_check(text):
+        if len(text) < 3:
+            return " must have at least 3 characters."
+
+    def password2_check(password, password2):
+        if password != password2:
+            return "Password 2 must match password."
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        password2 = request.form['password2']
+        existing_user = User.query.filter_by(username=username).first()
+
+        if not existing_user:
+            if no_entry(username):
+                flash("Username" + no_entry(username))
+                return redirect('/signup')
+            elif length_check(username):
+                flash("Username" + length_check(username))
+                return redirect('/signup')
+            
+            if no_entry(password):
+                flash("Password" + no_entry(password))
+                return redirect('/signup')
+            elif length_check(password):
+                flash("Password" + length_check(password))
+                return redirect('/signup')
+            
+            if password2_check(password, password2):
+                flash(password2_check(password, password2))
+                return redirect('/signup')   
+
+            new_user = User(username, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['username'] = username
+            return redirect('/newpost')
+
+        else:
+            flash("Username already exists")
+            return redirect('/signup')
+
+    return render_template('signup.html')
 
 if __name__ == '__main__':
     app.run()
