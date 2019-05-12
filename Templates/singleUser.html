@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>All Blogs</h1>
+    <h1>All Blogs by {{blog.username}}</h1>
     {% for blog in blogs %}
         <h2><a href="/all_blogs?id={{blog.id}}">{{blog.title}}</a></h2>
         <p></p>

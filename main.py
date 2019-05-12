@@ -40,40 +40,16 @@ def password2_check(password, password2):
     if password != password2:
         return "Password 2 must match password."
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup', 'view_blogs', 'index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
 @app.route('/')
-def redirect_main():
-    return redirect('/all_blogs')
-
-@app.route('/all_blogs')
-def view_blogs():
-    blog_id = request.args.get('id')
-
-    if blog_id:
-        view_blog=Blog.query.get(blog_id)
-        return render_template('view_blog.html', blog=view_blog)
-    else:
-        show_all = Blog.query.all()
-        return render_template('all_blogs.html', blogs=show_all)
-
-@app.route('/new_blog', methods=['POST', 'GET'])
-def new_post():
-    if request.method == 'POST':
-        add_title = request.form['blog_title']
-        add_blog = request.form['blog_post']
-        add_all = Blog(add_title, add_blog)
-
-        if no_entry(add_title):
-            flash("Title" + no_entry(add_title))
-            return redirect('/new_blog')
-        if no_entry(add_blog):
-            flash("Blog post" + no_entry(add_blog))
-            return redirect('/new_blog')
-        db.session.add(add_all)
-        db.session.commit()
-        show_blog = "/all_blogs?id=" + str(add_all.id)
-        return redirect(show_blog)
-    else:
-        return render_template('new_blog.html')
+def index():
+    show_all = User.query.all()
+    return render_template('index.html', users=show_all)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -86,7 +62,7 @@ def login():
             if user.password == password:
                 session['username'] = username
                 flash("Logged in")
-                return redirect('/newpost')
+                return redirect('/new_blog')
             else:
                 flash("Incorrect password entered")
                 return redirect('/login')         
@@ -126,11 +102,46 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/newpost')
+            return redirect('/new_blog')
         else:
             flash("Username already exists")
             return redirect('/signup')
     return render_template('signup.html')
+
+@app.route('/new_blog', methods=['POST', 'GET'])
+def new_post():
+    if request.method == 'POST':
+        add_title = request.form['blog_title']
+        add_blog = request.form['blog_post']
+
+        add_all = Blog(add_title, add_blog)
+
+        if no_entry(add_title):
+            flash("Title" + no_entry(add_title))
+            return redirect('/new_blog')
+        if no_entry(add_blog):
+            flash("Blog post" + no_entry(add_blog))
+            return redirect('/new_blog')
+        db.session.add(add_all)
+        db.session.commit()
+        show_blog = "/all_blogs?id=" + str(add_all.id)
+        return redirect(show_blog)
+    else:
+        return render_template('new_blog.html')
+
+@app.route('/all_blogs')
+def view_blogs():
+    blog_id = request.args.get('id')
+    user_id = request.args.get('user')
+
+    if blog_id:
+        view_blog=Blog.query.get(blog_id)
+        return render_template('view_blog.html', blog=view_blog)
+    if user_id:
+        view_blog=Blog.query.get(blog_id)
+
+    show_all = Blog.query.all()
+    return render_template('all_blogs.html', blogs=show_all)
 
 @app.route('/logout')
 def logout():

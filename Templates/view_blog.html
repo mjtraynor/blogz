@@ -2,9 +2,11 @@
 
 {% block content %}
 
-    <h1>Individual Blog</h1>
+    <h1>New Blog</h1>
     <h2>{{blog.title}}</h2>
     <p></p>
     <p>{{blog.blog}}</p>
+    <p></p>
+    Written by <a href="/singleUser?user={{blog.owner_id}}">{{blog.owner.username}}</a>
 
 {% endblock %}
