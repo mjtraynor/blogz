@@ -6,15 +6,13 @@
     
     <h1>New Blog Post</h1>
     <form id=form action="/new_blog" method='POST'>
-        <label>Blog Title:
+        <label>Blog Title
             <input name="blog_title" type="text"}>
         </label>
-        <span class="error"> {{title_error}}</span>
         <p></p>
-        <label>Blog Post:
+        <label>Blog Post
             <textarea name="blog_post" type="textarea" rows="10" cols="100"></textarea>
         </label>
-        <span class="error"> {{blog_error}}</span>
         <p></p>
         <input type="submit" value="Add Entry" />
     </form>

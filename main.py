@@ -8,7 +8,6 @@ app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
 class Blog(db.Model):
-
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     blog = db.Column(db.Text)
@@ -20,7 +19,6 @@ class Blog(db.Model):
         self.owner = owner
 
 class User(db.Model):
-
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(50))
@@ -30,11 +28,17 @@ class User(db.Model):
         self.username = username
         self.password = password
 
-def blank(text):
-    if text:
-        return False
-    else:
-        return True
+def no_entry(text):
+    if not text:
+        return " is required."
+
+def length_check(text):
+    if len(text) < 3:
+        return " must have at least 3 characters."
+
+def password2_check(password, password2):
+    if password != password2:
+        return "Password 2 must match password."
 
 @app.route('/')
 def redirect_main():
@@ -53,28 +57,21 @@ def view_blogs():
 
 @app.route('/new_blog', methods=['POST', 'GET'])
 def new_post():
-
-    title_error = ""
-    blog_error = ""
-
     if request.method == 'POST':
         add_title = request.form['blog_title']
         add_blog = request.form['blog_post']
         add_all = Blog(add_title, add_blog)
 
-        if blank(add_title):
-            title_error = "You need to enter a title."
-            if blank(add_blog):
-                blog_error = "You need to make a blog entry."
-            return render_template('new_blog.html', title_error=title_error, blog_error=blog_error)
-        elif blank(add_blog):
-            blog_error = "You need to make a blog entry."
-            return render_template('new_blog.html', title_error=title_error, blog_error=blog_error)
-        else:
-            db.session.add(add_all)
-            db.session.commit()
-            show_blog = "/all_blogs?id=" + str(add_all.id)
-            return redirect(show_blog)
+        if no_entry(add_title):
+            flash("Title" + no_entry(add_title))
+            return redirect('/new_blog')
+        if no_entry(add_blog):
+            flash("Blog post" + no_entry(add_blog))
+            return redirect('/new_blog')
+        db.session.add(add_all)
+        db.session.commit()
+        show_blog = "/all_blogs?id=" + str(add_all.id)
+        return redirect(show_blog)
     else:
         return render_template('new_blog.html')
 
@@ -84,6 +81,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
+
         if user:
             if user.password == password:
                 session['username'] = username
@@ -102,19 +100,6 @@ def login():
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-
-    def no_entry(text):
-        if not text:
-            return " is required."
-
-    def length_check(text):
-        if len(text) < 3:
-            return " must have at least 3 characters."
-
-    def password2_check(password, password2):
-        if password != password2:
-            return "Password 2 must match password."
-
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -128,29 +113,29 @@ def signup():
             elif length_check(username):
                 flash("Username" + length_check(username))
                 return redirect('/signup')
-            
             if no_entry(password):
                 flash("Password" + no_entry(password))
                 return redirect('/signup')
             elif length_check(password):
                 flash("Password" + length_check(password))
                 return redirect('/signup')
-            
             if password2_check(password, password2):
                 flash(password2_check(password, password2))
                 return redirect('/signup')   
-
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
             return redirect('/newpost')
-
         else:
             flash("Username already exists")
             return redirect('/signup')
-
     return render_template('signup.html')
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('/all_blogs')
 
 if __name__ == '__main__':
     app.run()
