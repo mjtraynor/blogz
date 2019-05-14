@@ -142,6 +142,7 @@ def view_blogs():
         return render_template('view_blog.html', blog=view_blog)
     if user_id:
         view_blog=Blog.query.get(blog_id)
+        return render_template('singleUser.html', blogs=show_all)
 
     show_all = Blog.query.all()
     return render_template('all_blogs.html', blogs=show_all)
