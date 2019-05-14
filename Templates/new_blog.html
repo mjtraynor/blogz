@@ -1,20 +1,18 @@
 {% extends 'base.html' %}
-
 {% block content %}    
-
-## Will need to update this to link to the users blogs.
-    
-    <h1>New Blog Post</h1>
-    <form id=form action="/new_blog" method='POST'>
-        <label>Blog Title
-            <input name="blog_title" type="text"}>
-        </label>
-        <p></p>
-        <label>Blog Post
-            <textarea name="blog_post" type="textarea" rows="10" cols="100"></textarea>
-        </label>
-        <p></p>
-        <input type="submit" value="Add Entry" />
-    </form>
-
+<h1>New Blog Post</h1>
+<form id=form action="/new_blog" method='POST'>
+    <table>
+        <tr>
+            <td>Blog Title</td>
+            <td><input name="blog_title" type="text"}></td>
+        </tr>
+        <tr>
+            <td>Blog Post</td>
+            <td><textarea name="blog_post" type="textarea" rows="10" cols="100"></textarea></td>
+        </tr>
+    </table>
+    <p></p>
+    <input type="submit" value="Add Entry" />
+</form>
 {% endblock %}
