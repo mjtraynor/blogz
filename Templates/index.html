@@ -4,7 +4,7 @@
 
     <h1>All Authors</h1>
     {% for user in users %}
-        <h2><a href="/all_blogs?id={{user.id}}">{{user.username}}</a></h2>
+        <h2><a href="/all_blogs?user={{user.id}}">{{user.username}}</a></h2>
         <p></p>
         <p></p>
     {% endfor %}

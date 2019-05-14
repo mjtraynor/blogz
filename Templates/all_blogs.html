@@ -8,6 +8,8 @@
         <p></p>
         <p>{{blog.blog}}</p>
         <p></p>
+        Written by <a href="/all_blogs?user={{blog.owner_id}}">{{blog.owner.username}}</a>
+        <p></p>
         <p></p>
     {% endfor %}
 

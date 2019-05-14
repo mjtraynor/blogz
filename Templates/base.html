@@ -2,6 +2,11 @@
 <html>
 
 <head>
+    <style>
+    .error {
+            color:red;
+        }
+    </style>
 </head>
 <header>
     <nav>
@@ -12,6 +17,7 @@
                 <a href="/new_blog">Post a new blog</a>
             </div>
             <div style="display: flex;">
+                <a href="/signup">Create an account</a> &nbsp; &nbsp;
                 <a href="/login">Log in to account</a> &nbsp; &nbsp;
                 <a href="/logout">Log out from account</a>
             </div>
@@ -23,8 +29,10 @@
 <body>
 
     {% with messages = get_flashed_messages() %}
-    <ul>
+    <ul class=error>
         {% for message in messages %}
+        <p></p>
+        <p></p>
         <li>{{message}}</li>
         {% endfor %}
     </ul>

@@ -45,6 +45,7 @@ def password2_check(password, password2):
 def require_login():
     allowed_routes = ['login', 'signup', 'view_blogs', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
+        flash("You must log in to perform that action")
         return redirect('/login')
 
 @app.route('/')
@@ -70,8 +71,6 @@ def login():
         else:
             flash('User does not exist')
             return redirect('/login')
-
-## Need to add something here about what happend if they want to create an account, and get redirected to /signup
 
     return render_template('login.html')    
 
@@ -141,8 +140,8 @@ def view_blogs():
         view_blog=Blog.query.get(blog_id)
         return render_template('view_blog.html', blog=view_blog)
     if user_id:
-        view_blog=Blog.query.get(blog_id)
-        return render_template('singleUser.html', blogs=show_all)
+        view_blogs=Blog.query.filter_by(owner_id=user_id)
+        return render_template('singleUser.html', blogs=view_blogs)
 
     show_all = Blog.query.all()
     return render_template('all_blogs.html', blogs=show_all)
