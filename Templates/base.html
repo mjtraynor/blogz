@@ -1,22 +1,38 @@
-
 <!doctype html>
 <html>
-    <head>
-    </head>
-    <header>
-        <nav>
-            <a href="/all_blogs">View all blogs</a> &nbsp; &nbsp;
-            <a href="/">View all users</a> &nbsp; &nbsp;
-            <a href="/new_blog">Post a new blog</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            <a href="/login">Log in to account</a> &nbsp; &nbsp;
-            <a href="/logout">Log out from account</a>
-        </nav>
-    </header>
+
+<head>
+</head>
+<header>
+    <nav>
+        <div style="display: flex; flex-direction: row;">
+            <div style="justify-content: flex-start; align-items: flex-start; align-content: flex-start">
+                <a href="/">View all users</a> &nbsp; &nbsp;
+                <a href="/all_blogs">View all blogs</a> &nbsp; &nbsp;
+                <a href="/new_blog">Post a new blog</a>
+            </div>
+            <div style="justify-content: flex-end; align-items: flex-end; align-content: flex-end">
+                <a href="/login">Log in to account</a> &nbsp; &nbsp;
+                <a href="/logout">Log out from account</a>
+            </div>
+        </div>
+
+    </nav>
+</header>
+
 <body>
+
+    {% with messages = get_flashed_messages() %}
+    <ul>
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
 
     {% block content %}
     {% endblock %}
 
 </body>
+
 </html>

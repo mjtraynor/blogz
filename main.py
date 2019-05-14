@@ -6,6 +6,7 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:qwerty@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
+app.secret_key = 'fej4s8iku332sv56'
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -110,11 +111,13 @@ def signup():
 
 @app.route('/new_blog', methods=['POST', 'GET'])
 def new_post():
+    owner = User.query.filter_by(username=session['username']).first()
+
     if request.method == 'POST':
         add_title = request.form['blog_title']
         add_blog = request.form['blog_post']
 
-        add_all = Blog(add_title, add_blog)
+        add_all = Blog(add_title, add_blog, owner)
 
         if no_entry(add_title):
             flash("Title" + no_entry(add_title))
